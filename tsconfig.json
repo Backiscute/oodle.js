@@ -1,0 +1,4 @@
+{
+    "extends": ["@backs/tsconfig/lib"],
+    "include": ["src", "test"],
+}

@@ -1,0 +1,11 @@
+thunder-tests
+node_modules/
+coverage/
+dist/
+logs/
+temp/
+cache/
+Public/
+*.db
+.env
+package-lock.json
