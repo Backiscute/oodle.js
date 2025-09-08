@@ -1,5 +1,6 @@
 thunder-tests
 node_modules/
+bin/
 coverage/
 dist/
 logs/
