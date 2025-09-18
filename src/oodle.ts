@@ -1,21 +1,25 @@
 import {
-    OodleCheckCrc,
+    OodleCheckCRC,
     OodleCompressionLevel,
     OodleCompressor,
     OodleDecodeThreadPhase,
     OodleFuzzSafe,
     OodleLib,
     OodleVerbosity,
-} from "@/typings";
+} from "./typings";
 import { OODLE_PATH } from "./constants";
 import koffi from "koffi";
 import download from "./downloader";
+import p from "path";
 
 export default class Oodle {
     private lib?: koffi.IKoffiLib;
-    private oodleDecompress?: OodleLib["decompress"];
-    private oodleCompress?: OodleLib["compress"];
-    private oodleGetMinCompressedSize?: OodleLib["getMinCompressedSize"];
+    // @internal
+    public nativeDecompress?: OodleLib["decompress"];
+    // @internal
+    public nativeCompress?: OodleLib["compress"];
+    // @internal
+    public nativeMaxCompressedSize?: OodleLib["maxCompressedSize"];
     private pathOrClearCache: string | boolean;
 
     constructor(pathOrClearCache?: string | boolean) {
@@ -24,7 +28,10 @@ export default class Oodle {
 
     async init() {
         let path: string;
-        if (typeof this.pathOrClearCache === "string") path = this.pathOrClearCache;
+        if (typeof this.pathOrClearCache === "string") {
+            if (!p.isAbsolute(this.pathOrClearCache)) throw new OodleError("Oodle path must be absolute", "path_not_absolute");
+            path = this.pathOrClearCache;
+        }
         else {
             path = OODLE_PATH;
             await download(this.pathOrClearCache);
@@ -33,7 +40,7 @@ export default class Oodle {
         try {
             const lib = koffi.load(path);
             this.lib = lib;
-            this.oodleDecompress = lib.func("OodleLZ_Decompress", "int", [
+            this.nativeDecompress = lib.func("OodleLZ_Decompress", "int", [
                 "uint8*",
                 "int",
                 "uint8*",
@@ -49,7 +56,7 @@ export default class Oodle {
                 "size_t",
                 "int",
             ]) as OodleLib["decompress"];
-            this.oodleCompress = lib.func("OodleLZ_Compress", "int", [
+            this.nativeCompress = lib.func("OodleLZ_Compress", "int", [
                 "int",
                 "uint8*",
                 "size_t",
@@ -61,18 +68,18 @@ export default class Oodle {
                 "void*",
                 "size_t",
             ]) as OodleLib["compress"];
-            this.oodleGetMinCompressedSize = lib.func(
+            this.nativeMaxCompressedSize = lib.func(
                 "OodleLZ_GetCompressedBufferSizeNeeded",
                 "int",
                 ["int", "int"],
-            ) as OodleLib["getMinCompressedSize"];
+            ) as OodleLib["maxCompressedSize"];
             
             return this;
         } catch (error) {
             this.lib = undefined;
-            this.oodleDecompress = undefined;
-            this.oodleCompress = undefined;
-            this.oodleGetMinCompressedSize = undefined;
+            this.nativeDecompress = undefined;
+            this.nativeCompress = undefined;
+            this.nativeMaxCompressedSize = undefined;
             throw new OodleError(
                 `Oodle library initialization failed: ${error}`,
                 "lib_init_failed",
@@ -89,12 +96,13 @@ export default class Oodle {
         destOffset: number,
         {
             fuzzSafe = OodleFuzzSafe.Yes,
-            checkCrc = OodleCheckCrc.No,
+            checkCRC = OodleCheckCRC.No,
+            // eslint-disable-next-line @typescript-eslint/no-deprecated
             verbosity = OodleVerbosity.None,
             decodeThreadPhase = OodleDecodeThreadPhase.Unthreaded,
         },
     ) {
-        if (!this.lib || !this.oodleDecompress)
+        if (!this.lib || !this.nativeDecompress)
             throw new OodleError(
                 "Oodle library not initialized",
                 "lib_not_initialized",
@@ -124,11 +132,12 @@ export default class Oodle {
                 `Invalid Oodle fuzz safe option: ${fuzzSafe}`,
                 "fuzz_safe_invalid",
             );
-        if (!OodleCheckCrc[checkCrc])
+        if (!OodleCheckCRC[checkCRC])
             throw new OodleError(
-                `Invalid Oodle check CRC option: ${checkCrc}`,
+                `Invalid Oodle check CRC option: ${checkCRC}`,
                 "check_crc_invalid",
             );
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
         if (!OodleVerbosity[verbosity])
             throw new OodleError(
                 `Invalid Oodle verbosity level: ${verbosity}`,
@@ -141,13 +150,13 @@ export default class Oodle {
             );
 
         const buf = dest.subarray(destOffset, destOffset + destSize);
-        const size = this.oodleDecompress(
+        const size = this.nativeDecompress(
             src.subarray(srcOffset, srcOffset + srcSize),
             srcSize,
             buf,
             destSize,
             fuzzSafe,
-            checkCrc,
+            checkCRC,
             verbosity,
             null,
             0,
@@ -172,7 +181,7 @@ export default class Oodle {
         compressor: OodleCompressor = OodleCompressor.Kraken,
         level: OodleCompressionLevel = OodleCompressionLevel.Optimal,
     ) {
-        if (!this.lib || !this.oodleCompress)
+        if (!this.lib || !this.nativeCompress)
             throw new OodleError(
                 "Oodle library not initialized",
                 "lib_not_initialized",
@@ -194,9 +203,9 @@ export default class Oodle {
             );
 
         const buf = Buffer.allocUnsafe(
-            this.minCompressedSize(src.length, compressor),
+            this.maxCompressedSize(src.length, compressor),
         );
-        const size = this.oodleCompress(
+        const size = this.nativeCompress(
             compressor,
             src,
             src.length,
@@ -217,8 +226,8 @@ export default class Oodle {
         return buf.subarray(0, size);
     }
 
-    minCompressedSize(srcSize: number, compressor: OodleCompressor) {
-        if (!this.lib || !this.oodleGetMinCompressedSize)
+    maxCompressedSize(srcSize: number, compressor: OodleCompressor) {
+        if (!this.lib || !this.nativeMaxCompressedSize)
             throw new OodleError(
                 "Oodle library not initialized",
                 "lib_not_initialized",
@@ -233,7 +242,7 @@ export default class Oodle {
                 `Invalid Oodle compressor: ${compressor}`,
                 "compressor_invalid",
             );
-        return this.oodleGetMinCompressedSize(compressor, srcSize);
+        return this.nativeMaxCompressedSize(compressor, srcSize);
     }
 }
 

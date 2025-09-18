@@ -24,16 +24,16 @@ describe("Oodle Implementation", () => {
 
     describe("minCompressedSize", () => {
         test("returns positive value for valid input", () => {
-            const size = oodle.minCompressedSize(1000, OodleCompressor.Kraken);
+            const size = oodle.maxCompressedSize(1000, OodleCompressor.Kraken);
             expect(size).toBeGreaterThan(0);
         });
 
         test("throws OodleError for invalid srcSize", () => {
-            expect(() => oodle.minCompressedSize(0, OodleCompressor.Kraken)).toThrow(OodleError);
+            expect(() => oodle.maxCompressedSize(0, OodleCompressor.Kraken)).toThrow(OodleError);
         });
 
         test("throws OodleError for invalid compressor", () => {
-            expect(() => oodle.minCompressedSize(100, 999 as OodleCompressor)).toThrow(OodleError);
+            expect(() => oodle.maxCompressedSize(100, 999 as OodleCompressor)).toThrow(OodleError);
         });
     });
 
@@ -53,7 +53,7 @@ describe("Oodle Implementation", () => {
         test("compress returns trimmed buffer", () => {
             const compressed = oodle.compress(input);
             expect(compressed.length).toBeGreaterThan(0);
-            expect(compressed.length).toBeLessThanOrEqual(oodle.minCompressedSize(input.length, OodleCompressor.Kraken));
+            expect(compressed.length).toBeLessThanOrEqual(oodle.maxCompressedSize(input.length, OodleCompressor.Kraken));
         });
     });
 
@@ -80,7 +80,7 @@ describe("Oodle Implementation", () => {
         test("throws OodleError on invalid option values", () => {
             const output = Buffer.allocUnsafe(input.length);
             expect(() => oodle.decompress(compressed, compressed.length, 0, output, output.length, 0, { fuzzSafe: 999 as any })).toThrow(OodleError);
-            expect(() => oodle.decompress(compressed, compressed.length, 0, output, output.length, 0, { checkCrc: 999 as any })).toThrow(OodleError);
+            expect(() => oodle.decompress(compressed, compressed.length, 0, output, output.length, 0, { checkCRC: 999 as any })).toThrow(OodleError);
             expect(() => oodle.decompress(compressed, compressed.length, 0, output, output.length, 0, { verbosity: 999 as any })).toThrow(OodleError);
             expect(() => oodle.decompress(compressed, compressed.length, 0, output, output.length, 0, { decodeThreadPhase: 999 as any })).toThrow(OodleError);
         });

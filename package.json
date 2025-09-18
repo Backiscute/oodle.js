@@ -17,7 +17,7 @@
         "bin"
     ],
     "scripts": {
-        "build": "tsup && prettier --write --log-level=silent ./dist",
+        "build": "tsup",
         "lint": "prettier --check ./src && eslint ./src",
         "check": "tsc --noEmit",
         "format": "prettier --write ./src && eslint ./src --fix",
@@ -43,7 +43,7 @@
         "compression",
         "decompression",
         "unreal engine",
-        "unreal-engine",
+        "unrealengine",
         "ue4",
         "ue5",
         "fortnite",
@@ -66,6 +66,7 @@
         "eslint": "^9.35.0",
         "eslint-config-prettier": "^10.1.8",
         "prettier": "^3.6.2",
+        "tsup": "^8.5.0",
         "tsx": "^4.20.5",
         "typescript": "^5.9.2",
         "typescript-eslint": "^8.42.0",

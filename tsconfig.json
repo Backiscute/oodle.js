@@ -1,4 +1,7 @@
 {
     "extends": ["@backs/tsconfig/lib"],
+    "compilerOptions": {
+        "stripInternal": true
+    },
     "include": ["src", "test"],
 }
