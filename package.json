@@ -1,6 +1,6 @@
 {
     "name": "oodle.js",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "description": "Simple Oodle data compression wrapper",
     "main": "./dist/index.cjs",
     "module": "./dist/index.js",
