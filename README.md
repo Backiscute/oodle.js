@@ -36,7 +36,6 @@ const Oodle = require("oodle.js").default
     - `string`: path to lib
     - `boolean`: whether to clear cache when downloading the lib
     - Defaults to `false`
-- `warn`: `boolean`, whether to warn if compressed size will be bigger than uncompressed
 
 ### Oodle.compress(): `Buffer`
 - `src`: `Buffer`
