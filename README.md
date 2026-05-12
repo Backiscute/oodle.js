@@ -33,14 +33,14 @@ const Oodle = require("oodle.js").default
 ```
 
 ## Options
-### Oodle.constructor
+### Oodle.constructor()
 - `pathOrClearCache`:
     - `string`: path to lib
     - `boolean`: whether to clear cache when downloading the lib
     - Defaults to `false`
 - `warn`: `boolean`, whether to warn if compressed size will be bigger than uncompressed
 
-### Oodle.compress
+### Oodle.compress()
 - `src`: `Buffer`
 - `srcSize`: `number`
 - `srcOffset`: `number`
@@ -53,10 +53,14 @@ const Oodle = require("oodle.js").default
     - `verbosity`: `OodleVerbosity.None`, defaults to `OodleVerbosity.None`
     - `decodeThreadPhase`: `OodleDecodeThreadPhase.Unthreaded`, defaults to `OodleDecodeThreadPhase.Unthreaded`
 
-### Oodle.decompress
+### Oodle.decompress()
 - `src`: `Buffer`,
 - `compressor`: `OodleCompressor` defaults to `OodleCompressor.Kraken`
 - `level`: `OodleCompressionLevel` defaults to `OodleCompressionLevel.Optimal`
+
+### Oodle.maxCompressedSize()
+- `srcSize`: `number`
+- `compressor`: `OodleCompressor`
 
 ### Check JSDoc for more info on:
 - OodleFuzzSafe
