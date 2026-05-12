@@ -3,7 +3,7 @@
 
 Simple Node.js binding for **Oodle LZ compression/decompression** using native libraries via `koffi`.
 
-It supports automatic library download or manual native DLL/SO loading.
+It supports automatic library download from [workingrobot/oodleue](https://github.com/workingrobot/oodleue) or manual native DLL/SO loading.
 
 AI was used to generate the README and jsdoc, code is human.
 
@@ -26,8 +26,6 @@ npm i oodle.js@latest
 ---
 
 ## Quick Start
-
-### Modern usage (current API)
 
 ```ts
 import { Oodle } from "oodle.js";
