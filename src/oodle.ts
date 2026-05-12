@@ -22,7 +22,8 @@ export class Oodle {
     public nativeMaxCompressedSize?: OodleLib["maxCompressedSize"];
     private pathOrClearCache: string | boolean;
 
-    constructor(pathOrClearCache?: string | boolean) {
+    // eslint-disable-next-line no-unused-vars
+    constructor(pathOrClearCache?: string | boolean, private warn = true) {
         this.pathOrClearCache = pathOrClearCache ?? false;
     }
 
@@ -100,7 +101,7 @@ export class Oodle {
             // eslint-disable-next-line @typescript-eslint/no-deprecated
             verbosity = OodleVerbosity.None,
             decodeThreadPhase = OodleDecodeThreadPhase.Unthreaded,
-        },
+        } = {}
     ) {
         if (!this.lib || !this.nativeDecompress)
             throw new OodleError(
@@ -121,11 +122,6 @@ export class Oodle {
             throw new OodleError(
                 `Invalid source size: ${srcSize}`,
                 "src_size_invalid",
-            );
-        if (destSize < srcSize)
-            throw new OodleError(
-                `Destination size ${destSize} is smaller than source size ${srcSize}`,
-                "dest_size_invalid",
             );
         if (!OodleFuzzSafe[fuzzSafe])
             throw new OodleError(
@@ -179,7 +175,7 @@ export class Oodle {
     compress(
         src: Buffer,
         compressor: OodleCompressor = OodleCompressor.Kraken,
-        level: OodleCompressionLevel = OodleCompressionLevel.Optimal,
+        level: OodleCompressionLevel = OodleCompressionLevel.Optimal
     ) {
         if (!this.lib || !this.nativeCompress)
             throw new OodleError(
@@ -201,6 +197,9 @@ export class Oodle {
                 `Invalid Oodle compression level: ${level}`,
                 "compress_level_invalid",
             );
+
+        if (this.maxCompressedSize(src.length, compressor) > src.length && this.warn)
+            console.warn("Oodle compression warning: Max compressed size exceeds uncompressed size, consider not compressing.");
 
         const buf = Buffer.allocUnsafe(
             this.maxCompressedSize(src.length, compressor),

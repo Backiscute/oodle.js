@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
 import { LIB_DIR } from "../src/constants";
-import Oodle, { OodleError } from "../src/oodle";
+import { Oodle, OodleError } from "../src/oodle";
 import path from "path";
 import download from "../src/downloader";
 

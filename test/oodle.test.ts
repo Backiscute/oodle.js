@@ -5,10 +5,10 @@ import {
     OodleCompressor,
     OodleCompressionLevel,
 } from "../src/typings";
-import Oodle, { OodleError } from "../src/oodle";
+import { Oodle, OodleError } from "../src/oodle";
 
 describe("Oodle Implementation", () => {
-    const input = Buffer.from("hello world".repeat(50));
+    const input = Buffer.from("Hello, World!".repeat(50));
     let oodle: Oodle;
 
     beforeAll(async () => {
@@ -22,7 +22,7 @@ describe("Oodle Implementation", () => {
         expect(oodle["lib"]).toBeDefined();
     });
 
-    describe("minCompressedSize", () => {
+    describe("maxCompressedSize", () => {
         test("returns positive value for valid input", () => {
             const size = oodle.maxCompressedSize(1000, OodleCompressor.Kraken);
             expect(size).toBeGreaterThan(0);
