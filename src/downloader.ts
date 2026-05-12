@@ -1,30 +1,68 @@
-import fs from "fs";
-import uzip from "uzip";
-import path from "path";
-import { DARWIN_LIB_PATH, LINUX_LIB_PATH, OODLE_DIR, OODLE_PATH, REPO_URL, UNIX_ARCHIVE, WINDOWS_ARCHIVE, WINDOWS_LIB_PATH } from "./constants";
+import zip from "node-stream-zip";
+import fs from "node:fs";
+import path from "node:path";
+import {
+	OODLE_DIR,
+	OODLE_PATH,
+	REPO_URL,
+	UNIX_ARCHIVE,
+	WINDOWS_ARCHIVE,
+	LIB_PATH,
+} from "./constants";
 import { OodleError } from "./oodle";
 
 export default async function download(clearCache = false) {
-    try {
-        if (fs.existsSync(OODLE_PATH)) return;
-        if (clearCache) fs.rmSync(OODLE_DIR, { recursive: true });
-        if (!fs.existsSync(OODLE_DIR)) fs.mkdirSync(OODLE_DIR);
+	try {
+		if (fs.existsSync(OODLE_PATH)) return;
+		if (clearCache) fs.rmSync(OODLE_DIR, { recursive: true });
+		if (!fs.existsSync(OODLE_DIR)) fs.mkdirSync(OODLE_DIR);
 
-        const latestRelease = await fetch(REPO_URL).then(async (res) => await res.json() as { assets: { name: string; browser_download_url: string }[] });
-        const archiveName = process.platform === "win32" ? WINDOWS_ARCHIVE : UNIX_ARCHIVE;
-        const archiveURL = latestRelease.assets.find((asset) => asset.name === `${archiveName}-${process.arch}-release.zip`)?.browser_download_url;
+		const latestRelease = await fetch(REPO_URL).then(
+			async (res) =>
+				(await res.json()) as {
+					assets: { name: string; browser_download_url: string }[];
+				},
+		);
 
-        if (!archiveURL) throw new OodleError(`Oodle downloader failed: Couldn't find library download url for ${archiveName}-${process.arch}`, "lib_download_url_notfound");
+		const archiveName = `${process.platform === "win32" ? WINDOWS_ARCHIVE : UNIX_ARCHIVE}-${process.arch}-release.zip`;
+		const archiveURL = latestRelease.assets.find(
+			(asset) => asset.name === archiveName,
+		)?.browser_download_url;
 
-        const archive = await fetch(archiveURL).then(async (res) => await res.arrayBuffer());
-        const libPath = process.platform === "win32" ? WINDOWS_LIB_PATH : process.platform === "darwin" ? DARWIN_LIB_PATH : LINUX_LIB_PATH;
-        const lib = uzip.parse(archive)[libPath];
+		if (!archiveURL)
+			throw new OodleError(
+				`Oodle downloader failed: Couldn't find library download url for ${archiveName}-${process.arch}`,
+				"lib_download_url_notfound",
+			);
 
-        if (!lib) throw new OodleError("Oodle downloader failed: Couldn't find library in archive", "lib_notfound");
+		const archivePath = path.join(OODLE_DIR, "temp.zip");
+		fs.writeFileSync(
+			archivePath,
+			await fetch(archiveURL).then(async (res) => await res.bytes()),
+		);
 
-        fs.writeFileSync(path.join(OODLE_PATH), lib);
-    } catch (error) {
-        if (error instanceof OodleError) throw error;
-        throw new OodleError(`Oodle downloader failed: ${error}`, "lib_download_failed");
-    }
+		const archive = new zip.async({
+			file: archivePath,
+		});
+
+		try {
+			const lib = await archive.entryData(LIB_PATH);
+
+			fs.writeFileSync(OODLE_PATH, lib);
+		} catch {
+			throw new OodleError(
+				"Oodle downloader failed: Couldn't find library in archive",
+				"lib_notfound",
+			);
+		} finally {
+			await archive.close();
+			fs.rmSync(archivePath);
+		}
+	} catch (error) {
+		if (error instanceof OodleError) throw error;
+		throw new OodleError(
+			`Oodle downloader failed: ${error}`,
+			"lib_download_failed",
+		);
+	}
 }
