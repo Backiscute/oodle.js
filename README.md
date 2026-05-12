@@ -1,8 +1,11 @@
+
 # Oodle.js
 
 Simple Node.js binding for **Oodle LZ compression/decompression** using native libraries via `koffi`.
 
 It supports automatic library download or manual native DLL/SO loading.
+
+AI was used to generate the README and jsdoc, code is human.
 
 ---
 
@@ -16,9 +19,9 @@ npm i oodle.js@latest
 
 ## Compatibility
 
-* Windows: ✅ Tested
-* Linux: ✅ Tested
-* macOS: ⚠️ Untested (should work)
+* Windows: Tested
+* Linux: Tested
+* macOS: Untested (should work)
 
 ---
 
@@ -174,7 +177,7 @@ try {
 
 ---
 
-## ⚠️ Internal / Private API Notice
+## Internal / Private API Notice
 
 The following properties are **NOT part of the public API** and should not be used directly:
 
@@ -239,6 +242,3 @@ console.log(decompressed.equals(data)); // true
 ```
 
 ---
-
-Yes, I used AI to make jsdoc and README.
-No, the library isn't made with AI. I coded it.
