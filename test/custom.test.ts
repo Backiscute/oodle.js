@@ -5,7 +5,7 @@ import path from "path";
 import download from "../src/downloader";
 
 describe("Oodle custom library path", async () => {
-    const input = Buffer.from("hello world".repeat(50));
+    const input = Buffer.from("Hello, World!".repeat(50));
 
     await download(false);
 

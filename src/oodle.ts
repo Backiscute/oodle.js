@@ -22,8 +22,7 @@ export class Oodle {
     public nativeMaxCompressedSize?: OodleLib["maxCompressedSize"];
     private pathOrClearCache: string | boolean;
 
-    // eslint-disable-next-line no-unused-vars
-    constructor(pathOrClearCache?: string | boolean, private warn = true) {
+    constructor(pathOrClearCache?: string | boolean) {
         this.pathOrClearCache = pathOrClearCache ?? false;
     }
 
@@ -197,9 +196,6 @@ export class Oodle {
                 `Invalid Oodle compression level: ${level}`,
                 "compress_level_invalid",
             );
-
-        if (this.maxCompressedSize(src.length, compressor) > src.length && this.warn)
-            console.warn("Oodle compression warning: Max compressed size exceeds uncompressed size, consider not compressing.");
 
         const buf = Buffer.allocUnsafe(
             this.maxCompressedSize(src.length, compressor),

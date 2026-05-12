@@ -16,14 +16,12 @@ Please open a PR or issue if MacOS doesn't work.
 ```ts
 const oodle = await new Oodle().init();
 const data = Buffer.from("Hello, World!".repeat(50))
-if (oodle.maxCompressedSize(data.length, OodleCompressor.Kraken) > data.length) return console.log("not worth compressing") // Check compression size before
 const compressed = await oodle.compress(data);
 const decompressed = await oodle.decompress(compressed, compressed.length, 0 /* source offset */, Buffer.allocUnsafe(data.length), data.length, 0 /* dest offset */);
 console.log(decompressed.toString()) // "Hello, World:" x50
 ```
 
-> [!IMPORTANT]
-> You should check if the compressed size will be bigger than uncompressed using `Oodle.maxCompressedSize()` before compressing.
+> [!NOTE]
 > There are other compressors that Oodle offers.
 > Check out more options below
 
@@ -40,7 +38,7 @@ const Oodle = require("oodle.js").default
     - Defaults to `false`
 - `warn`: `boolean`, whether to warn if compressed size will be bigger than uncompressed
 
-### Oodle.compress()
+### Oodle.compress(): `Buffer`
 - `src`: `Buffer`
 - `srcSize`: `number`
 - `srcOffset`: `number`
@@ -53,12 +51,12 @@ const Oodle = require("oodle.js").default
     - `verbosity`: `OodleVerbosity.None`, defaults to `OodleVerbosity.None`
     - `decodeThreadPhase`: `OodleDecodeThreadPhase.Unthreaded`, defaults to `OodleDecodeThreadPhase.Unthreaded`
 
-### Oodle.decompress()
+### Oodle.decompress(): `Buffer`
 - `src`: `Buffer`,
 - `compressor`: `OodleCompressor` defaults to `OodleCompressor.Kraken`
 - `level`: `OodleCompressionLevel` defaults to `OodleCompressionLevel.Optimal`
 
-### Oodle.maxCompressedSize()
+### Oodle.maxCompressedSize(): `number`
 - `srcSize`: `number`
 - `compressor`: `OodleCompressor`
 
@@ -71,4 +69,5 @@ const Oodle = require("oodle.js").default
 - OodleCompressionLevel
 
 ## OodleError
-Just an Error with a `isOodleError()` method that returns true.
+`name`: `OodleError`
+`isOodleError()`: true
