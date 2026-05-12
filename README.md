@@ -69,5 +69,5 @@ const Oodle = require("oodle.js").default
 - OodleCompressionLevel
 
 ## OodleError
-`name`: `OodleError`
-`isOodleError()`: true
+- `name`: `OodleError`
+- `isOodleError()`: true
