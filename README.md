@@ -19,6 +19,11 @@ const decompressed = await oodle.decompress(...DecompressOptions);
 const compressed = await oodle.compress(...CompressOptions);
 ```
 
+### CJS import
+```js
+const Oodle = require("oodle.js").default
+```
+
 ## Options
 ### Oodle.constructor
 Takes one argument that can be one of: 
@@ -52,3 +57,6 @@ Defaults to `false`
 - OodleDecodeThreadPhase
 - OodleCompressor
 - OodleCompressionLevel
+
+## OodleError
+Just an Error with a `isOodleError()` method that returns true.

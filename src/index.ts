@@ -1,3 +1,3 @@
-export * from "./typings";
-export * from "./oodle";
-export { default as default } from "./oodle";
+export { OodleCheckCRC, OodleCompressionLevel, OodleCompressor, OodleDecodeThreadPhase, OodleFuzzSafe } from "./typings";
+export { Oodle, OodleError } from "./oodle";
+export { Oodle as default } from "./oodle";

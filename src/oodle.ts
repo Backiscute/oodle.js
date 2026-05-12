@@ -12,7 +12,7 @@ import koffi from "koffi";
 import download from "./downloader";
 import p from "path";
 
-export default class Oodle {
+export class Oodle {
     private lib?: koffi.IKoffiLib;
     // @internal
     public nativeDecompress?: OodleLib["decompress"];

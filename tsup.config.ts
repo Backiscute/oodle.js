@@ -5,18 +5,8 @@ export default defineConfig({
     format: ["cjs", "esm"],
     dts: true,
     splitting: false,
-    sourcemap: true,
+    sourcemap: false,
     clean: true,
     shims: true,
-    minify: true,
-    esbuildOptions: (options) => {
-        options.footer = {
-            js: `
-if (module.exports.default) {
-  Object.assign(module.exports.default, module.exports);
-  module.exports = module.exports.default;
-  delete module.exports.default;
-}`,
-        }
-    }
+    minify: true
 });
