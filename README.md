@@ -1,5 +1,5 @@
 # Oodle.js
-Simple library for oodle compression/decompression.
+Simple library for oodle data compression/decompression.
 
 Either pass a path to the lib or auto download latest release from [workingrobot/oodleue](https://api.github.com/repos/workingrobot/oodleue/releases/latest).
 
@@ -8,10 +8,12 @@ If you choose to download the library, it will be cached. Check out more below.
 ## Compatibility
 - Windows: Works & Tested
 - Linux: Works & Tested
-- MacOS: Untested
+- MacOS: Untested, should work
+
+Please open a PR or issue if MacOS doesn't work.
 
 ## Usage
-```
+```ts
 const oodle = await new Oodle().init();
 const decompressed = await oodle.decompress(...DecompressOptions);
 const compressed = await oodle.compress(...CompressOptions);
