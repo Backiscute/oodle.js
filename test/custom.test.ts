@@ -1,8 +1,8 @@
 import { describe, test, expect } from "vitest";
-import { LIB_DIR } from "@/constants";
-import Oodle, { OodleError } from "@/oodle";
+import { LIB_DIR } from "../src/constants";
+import Oodle, { OodleError } from "../src/oodle";
 import path from "path";
-import download from "@/downloader";
+import download from "../src/downloader";
 
 describe("Oodle custom library path", async () => {
     const input = Buffer.from("hello world".repeat(50));

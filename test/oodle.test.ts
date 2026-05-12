@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import { describe, test, expect, beforeAll } from "vitest";
 import {
     OodleCompressor,
     OodleCompressionLevel,
-} from "@/typings";
-import { describe, test, expect, beforeAll } from "vitest";
-import Oodle, { OodleError } from "@/oodle";
+} from "../src/typings";
+import Oodle, { OodleError } from "../src/oodle";
 
 describe("Oodle Implementation", () => {
     const input = Buffer.from("hello world".repeat(50));

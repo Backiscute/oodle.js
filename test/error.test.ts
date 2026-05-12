@@ -1,4 +1,4 @@
-import { OodleError } from "@/oodle";
+import { OodleError } from "../src/oodle";
 import { describe, test, expect } from "vitest";
 
 describe("Oodle Error", () => {
