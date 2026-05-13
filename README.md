@@ -1,9 +1,9 @@
 
 # Oodle.js
 
-Simple Node.js binding for **Oodle LZ compression/decompression** using native libraries via `koffi`.
+Simple wrapper for **Oodle data compression/decompression** using native bindings via `koffi`.
 
-It supports automatic library download from [workingrobot/oodleue](https://github.com/workingrobot/oodleue) or manual native DLL/SO loading.
+Supports automatic downloading from [workingrobot/oodleue](https://github.com/workingrobot/oodleue) or passing a path to the lib manually.
 
 AI was used to generate the README and jsdoc, code is human.
 
@@ -23,6 +23,12 @@ npm i oodle.js@latest
 * Linux: Tested
 * macOS: Untested (should work)
 
+* NodeJS: Tested
+* Bun: Tested
+* Deno: Untested
+
+#### Please open a PR or an issue if you encounter any errors.
+
 ---
 
 ## Quick Start
@@ -34,12 +40,10 @@ const oodle = await Oodle.Create();
 
 const input = Buffer.from("Hello, World!".repeat(50));
 
-// Compress
 const compressed = oodle.compress({
 	buffer: input,
 });
 
-// Decompress
 const decompressed = oodle.decompress(
 	{
 		buffer: compressed,
@@ -118,6 +122,8 @@ const output = oodle.decompress(
 }
 ```
 
+#### Use `size` and `offset` to select the data you want inside of the Buffer.
+
 ---
 
 ## Utility Methods
@@ -177,7 +183,7 @@ try {
 
 ## Internal / Private API Notice
 
-The following properties are **NOT part of the public API** and should not be used directly:
+The following properties are **NOT part of the public API** and should not be used directly unless you know what you're doing:
 
 * `_lib`
 * `_Compress`
@@ -188,7 +194,7 @@ The following properties are **NOT part of the public API** and should not be us
 
 ### Why?
 
-These are **direct native bindings** created via `koffi` and may change without notice.
+These are **direct native bindings** created via `koffi` and may change without notice. They also lack the abstraction provided by the wrapper.
 
 Always use:
 

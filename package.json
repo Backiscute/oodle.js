@@ -1,6 +1,6 @@
 {
     "name": "oodle.js",
-    "version": "2.0.2",
+    "version": "2.0.3",
     "description": "Simple Oodle data compression wrapper",
     "main": "./dist/index.cjs",
     "module": "./dist/index.js",
@@ -49,12 +49,12 @@
     ],
     "dependencies": {
         "koffi": "^2.14.0",
-        "node-stream-zip": "^1.15.0",
-        "tsup": "^8.5.1"
+        "node-stream-zip": "^1.15.0"
     },
     "devDependencies": {
         "@biomejs/biome": "2.4.15",
-        "@types/bun": "latest"
+        "@types/bun": "latest",
+        "tsup": "^8.5.1"
     },
     "peerDependencies": {
         "typescript": "^5"
