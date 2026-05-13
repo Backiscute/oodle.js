@@ -3,7 +3,7 @@
 
 Simple wrapper for **Oodle data compression/decompression** using native bindings via `koffi`.
 
-Supports automatic downloading from [workingrobot/oodleue](https://github.com/workingrobot/oodleue) or passing a path to the lib manually.
+Supports automatic downloading for current os and architecture or passing a path to the lib manually.
 
 AI was used to generate the README and jsdoc, code is human.
 
